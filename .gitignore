@@ -4,5 +4,6 @@
 *.bin
 *.elf
 *.swp
+*.pyc
 tags
 cscope.out
