@@ -3,6 +3,7 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 #include "stm32f4xx_spi.h"
+#include "misc.h"
 #include "pdm_filter.h"
 
 static void initialize_leds(void);
@@ -80,7 +81,16 @@ static void initialize_i2s2(void)
   i2sInit.I2S_MCLKOutput = I2S_MCLKOutput_Disable;
   I2S_Init(SPI2, &i2sInit);
 
-  /* TODO: Configure & enable NVIC */
+  /* Configure & enable NVIC*/
+  NVIC_InitTypeDef nvicInit;
+
+  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_3);
+  nvicInit.NVIC_IRQChannel = SPI2_IRQn;
+  nvicInit.NVIC_IRQChannelPreemptionPriority = 1;
+  nvicInit.NVIC_IRQChannelSubPriority = 0;
+  nvicInit.NVIC_IRQChannelCmd = ENABLE;
+
+  NVIC_Init(&nvicInit);
 
   /* Enable the Rx buffer not empty interrupt */
   SPI_I2S_ITConfig(SPI2, SPI_I2S_IT_RXNE, ENABLE);

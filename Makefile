@@ -1,13 +1,12 @@
 # put your *.o targets here, make should handle the rest!
 
-SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c
+SRCS = main_adc.c stm32f4xx_it.c system_stm32f4xx.c
 
 # all the files will be generated with this name (main.elf, main.bin, main.hex, etc)
 
-PROJ_NAME=main
+PROJ_NAME=tuner
 
 # Make sure st-flash is in your current path
-
 
 # that's it, no need to change anything below this line!
 
@@ -19,6 +18,7 @@ OBJCOPY=arm-none-eabi-objcopy
 CFLAGS  = -g -Wall -Tstm32_flash.ld 
 CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
+CFLAGS += -O0
 
 ###################################################
 

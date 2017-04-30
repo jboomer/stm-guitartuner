@@ -66,11 +66,11 @@
   *-----------------------------------------------------------------------------
   *        PLL_Q                                  | 7
  *-----------------------------------------------------------------------------
-  *        PLLI2S_N                               | 258
+  *        PLLI2S_N                               | 192
   *-----------------------------------------------------------------------------
-  *        PLLI2S_R                               | 3
+  *        PLLI2S_R                               | 6
   *-----------------------------------------------------------------------------
-  *        I2S input clock(Hz)                    | 86000000
+  *        I2S input clock(Hz)                    | 32000000
   *                                               |
   *        To achieve the following I2S config:   |
   *         - Master clock output (MCKO): ON      |
@@ -163,8 +163,8 @@
 
 /* PLLI2S_VCO = (HSE_VALUE Or HSI_VALUE / PLL_M) * PLLI2S_N
    I2SCLK = PLLI2S_VCO / PLLI2S_R */
-#define PLLI2S_N   258
-#define PLLI2S_R   3
+#define PLLI2S_N   192
+#define PLLI2S_R   6
 
 /**
   * @}
