@@ -48,6 +48,11 @@ int main(void)
     while (1) {
         // mainloop
         if (transferDone) {
+
+            //TODO: How to disable interrupts here?
+            
+            ADC_DMACmd(ADC1, DISABLE);
+
             handle_transfer_done();
         }
     }
@@ -123,6 +128,7 @@ static void initialize_adc()
   TIM_TimeBaseStructInit(&TIM_InitStruct);
   TIM_InitStruct.TIM_Prescaler = (uint16_t)(84 - 1); // Gives 1 MHz
   TIM_InitStruct.TIM_Period = 100 - 1; // Gives 10 KHz
+  //FIXME: This actually seems to be 20 kHZ?
   TIM_InitStruct.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_InitStruct.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_InitStruct.TIM_RepetitionCounter = 0;

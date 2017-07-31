@@ -20,7 +20,9 @@ def plot_binary_file(filename):
         values = [int.from_bytes(bVal, byteorder='little') * ADC_DIV
             for bVal in iter(partial(f.read, 2), b'') ]        
 
-    t = (np.arange(len(values)) / 10e3)
+    print('Read {0} values'.format(len(values)))
+
+    t = np.arange(len(values)) / 20e3
     plt.plot(t, values)
     plt.show()
 

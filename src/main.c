@@ -13,7 +13,7 @@ static void initialize_i2s2(void);
 int main(void) 
 {
 	
-	initialize_leds();
+  initialize_leds();
   initialize_crc();
   initialize_i2s2();
 
