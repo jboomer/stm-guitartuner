@@ -3,7 +3,7 @@
 # Theory
 
 # Hardware
-![Circuit](hw/circuit.svg?raw=true "Circuit")
+![Circuit](hw/circuit.png?raw=true "Circuit")
 
 # Code
 
