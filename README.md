@@ -1,7 +1,10 @@
-# Guitar Tuner
+# About
 
-## About
+# Theory
 
-## Theory
+# Hardware
+![Circuit](hw/circuit.svg?raw=true "Circuit")
 
-## Results
+# Code
+
+# Results
