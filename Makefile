@@ -1,6 +1,6 @@
 # put your *.o targets here, make should handle the rest!
 
-SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c usart.c
+SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c usart.c pitch.c
 
 # all the files will be generated with this name (main.elf, main.bin, main.hex, etc)
 
@@ -29,6 +29,9 @@ ROOT=$(shell pwd)
 
 CFLAGS += -Iinc -Ilib -Ilib/inc 
 CFLAGS += -Ilib/inc/core -Ilib/inc/peripherals 
+CFLAGS += -Ilib/inc/cmsis
+CFLAGS += -specs=nosys.specs
+CFLAGS += -DARM_MATH_CM4
 
 SRCS += lib/startup_stm32f4xx.s # add startup file to build
 
@@ -56,7 +59,7 @@ lib:
 proj: 	$(PROJ_NAME).elf
 
 $(PROJ_NAME).elf: $(SRCS)
-	$(CC) $(CFLAGS) $^ -o $@ -Llib -lstm32f4
+	$(CC) $(CFLAGS) $^ -o $@ -Llib -lstm32f4 -larm_cortexM4lf_math
 	$(OBJCOPY) -O ihex $(PROJ_NAME).elf $(PROJ_NAME).hex
 	$(OBJCOPY) -O binary $(PROJ_NAME).elf $(PROJ_NAME).bin
 

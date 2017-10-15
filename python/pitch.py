@@ -42,6 +42,9 @@ def plot_time_series(y):
     t = np.arange(n) / FS
 
     plt.subplot(311)
+    plt.title('Sampled signal')
+    plt.xlabel('time [sec]')
+    plt.ylabel('V')
     plt.plot(t, y)
 
     # Remove DC component
@@ -53,6 +56,9 @@ def plot_time_series(y):
     print('Max fft freq {0} Hz'.format(frq[np.argmax(f)]))
 
     plt.subplot(312)
+    plt.title('Fourier transform')
+    plt.xlabel('f [Hz]')
+    plt.ylabel('Magnitude')
     plt.plot(frq, abs(f))
 
     corr = correlate(y, y)
@@ -71,6 +77,9 @@ def plot_time_series(y):
 
 
     plt.subplot(313)
+    plt.title('Autocorrelation')
+    plt.xlabel('lag')
+    plt.ylabel('coeff')
     plt.plot(corrpos)
 
     plt.show()

@@ -7,16 +7,15 @@
 #include "stm32f4xx_it.h"
 #include "misc.h"
 #include "usart.h"
+#include "arm_math.h"
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
-#define ADC_BUFFERSIZE 4096 // At 10 KHz gives 0.4 seconds
+#include "pitch.h"
 
-#define MIN_PERIOD 20  // 500 Hz at 1 kHz sampling
-#define MAX_PERIOD  200 // 50 Hz at 1 kHz sampling
-
-#define TO_FLOAT(x) (((float)x / 2048) - 1.0)
+#define ADC_BUFFERSIZE 1024 // At 1 KHz gives 1 0.4seconds
 
 static void initialize_leds();
 static void initialize_button();
@@ -29,11 +28,15 @@ static void handle_buffer_full();
  */
 static __IO uint16_t buffer[ADC_BUFFERSIZE];
 
-
+static volatile uint16_t workingBuffer[ADC_BUFFERSIZE / 2];
+static volatile bool dataReady = false;
 
 int main(void) 
 {
 	
+    char printBuffer[50] = {0};
+    float freq = 0;
+
     initialize_leds();
     initialize_button();
     initialize_adc();
@@ -57,12 +60,31 @@ int main(void)
     ADC_SoftwareStartConv(ADC1);
     ADC_DMACmd(ADC1, ENABLE);
 
+
     while (1) {
         // mainloop
+        
+        if (dataReady) {
+            usart2_print("Running calc\n");
+
+            if (!pitch_fft((uint16_t*)workingBuffer
+                  , ADC_BUFFERSIZE / 2, &freq)) {
+                snprintf(printBuffer, 49, "Error in calculation\n");        
+        
+            } else {
+                snprintf(printBuffer, 49, "Freq: %.2f\n", freq);
+
+            }
+
+            // Set ready to false
+            dataReady = false;
+
+            usart2_print(printBuffer);
+        }
        
     }
 
-	return 0;
+    return 0;
 }
 
 static void initialize_leds() 
@@ -132,7 +154,7 @@ static void initialize_adc()
 
   TIM_TimeBaseStructInit(&TIM_InitStruct);
   TIM_InitStruct.TIM_Prescaler = (uint16_t)(168 - 1); // Gives 1MHz
-  TIM_InitStruct.TIM_Period = 100 - 1; // Gives 10 KHz
+  TIM_InitStruct.TIM_Period = 1000 - 1; // Gives 1 KHz
   TIM_InitStruct.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_InitStruct.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_InitStruct.TIM_RepetitionCounter = 0;
@@ -227,43 +249,24 @@ void DMA2_Stream0_IRQHandler(void) // 10 kHz , buffersize 4096, about 250ms per 
 
 static void handle_buffer_half_full()
 {
+    if (! dataReady) {
+        memcpy((void*)workingBuffer
+             , (void*)buffer
+             , ADC_BUFFERSIZE / 2);
 
-    int peak = MIN_PERIOD;
-    float high = 0;
-    float corr[MAX_PERIOD+2]; 
-    char printBuf[30] = {0};
-    
-    usart2_print("Start calc\n");
-
-    for (int lag = MIN_PERIOD; lag <= MAX_PERIOD + 1; lag++) {
-
-        float sum = 0;
-
-        for (int i = 0; i < ((ADC_BUFFERSIZE / 2) - lag); i++) {
-            sum += TO_FLOAT(buffer[i]) * TO_FLOAT(buffer[i + lag]);
-        }
-
-        corr[lag] = sum; 
+        dataReady = true;
     }
-
-    for (int i = MIN_PERIOD; i <= MAX_PERIOD; i++) {
-        if (corr[i] > high) {
-            peak = i;
-            high = corr[i];
-        }
-    }
-
-    snprintf(printBuf, 29, "Max lag %d\n", peak);
-
-    usart2_print(printBuf);
-
-    snprintf(printBuf, 29, "Peak %.2f\n", high);
-
-    usart2_print(printBuf);
 }
 
 static void handle_buffer_full()
 {
+   if (! dataReady) {
+        memcpy((void*)workingBuffer
+             , (void*)&buffer[ADC_BUFFERSIZE / 2]
+             , ADC_BUFFERSIZE / 2);
 
+        dataReady = true;
+    }
 }
+
 
