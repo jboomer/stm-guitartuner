@@ -10,7 +10,7 @@ from scipy.signal import correlate
 
 # Constants
 ADC_DIV = 3.3 / 4095
-FS = 20e3
+FS = 2e3
 
 def main():
 
@@ -41,7 +41,7 @@ def plot_time_series(y):
 
     t = np.arange(n) / FS
 
-    plt.subplot(311)
+    plt.figure(1)
     plt.title('Sampled signal')
     plt.xlabel('time [sec]')
     plt.ylabel('V')
@@ -53,9 +53,9 @@ def plot_time_series(y):
     f = fft(y)
     f = f[:n//2]
 
-    print('Max fft freq {0} Hz'.format(frq[np.argmax(f)]))
+    print('Max fft freq {0} Hz'.format(frq[np.argmax(abs(f))]))
 
-    plt.subplot(312)
+    plt.figure(2)
     plt.title('Fourier transform')
     plt.xlabel('f [Hz]')
     plt.ylabel('Magnitude')
@@ -76,7 +76,7 @@ def plot_time_series(y):
     print('Highest autocorr peak {0} Hz'.format(FS / period))
 
 
-    plt.subplot(313)
+    plt.figure(3)
     plt.title('Autocorrelation')
     plt.xlabel('lag')
     plt.ylabel('coeff')

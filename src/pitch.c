@@ -2,7 +2,7 @@
 #include "pitch.h"
 #include "arm_math.h"
 
-#define SAMPLING_FREQUENCY 1e3
+#define SAMPLING_FREQUENCY 2e3
 #define BUFFERSIZE         512
 #define FFT_BIN_WIDTH      (SAMPLING_FREQUENCY / BUFFERSIZE)
 

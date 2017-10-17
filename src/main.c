@@ -15,7 +15,7 @@
 
 #include "pitch.h"
 
-#define ADC_BUFFERSIZE 1024 // At 1 KHz gives 1 0.4seconds
+#define ADC_BUFFERSIZE 1024 // At 2 KHz gives 1 seconds for full buffer
 
 static void initialize_leds();
 static void initialize_button();
@@ -37,21 +37,23 @@ int main(void)
     char printBuffer[50] = {0};
     float freq = 0;
 
+    init_usart2(115200);
     initialize_leds();
     initialize_button();
     initialize_adc();
-    init_usart2(115200);
 
     GPIO_ResetBits(GPIOD, GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15);
 
     usart2_print("Init...\n");
 
+    /* Wait for button press */
     while(! GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0))
     {
 
     }
 
     usart2_print("Button_press\n");
+
 
     GPIO_SetBits(GPIOD, GPIO_Pin_12);
 
@@ -148,13 +150,12 @@ static void initialize_adc()
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
-  /* TIM2 is clocked by 42 MHz APB1 bus, but since TIMPRE bit is not set
-   * and APB1 prescaler is not 1, clock speed is 2x42 Mhz*/
   TIM_TimeBaseInitTypeDef TIM_InitStruct;
 
+  /* APB1 Bus speed is 84 Mhz */
   TIM_TimeBaseStructInit(&TIM_InitStruct);
-  TIM_InitStruct.TIM_Prescaler = (uint16_t)(168 - 1); // Gives 1MHz
-  TIM_InitStruct.TIM_Period = 1000 - 1; // Gives 1 KHz
+  TIM_InitStruct.TIM_Prescaler = (uint16_t)(84 - 1); // Gives 1MHz
+  TIM_InitStruct.TIM_Period = 500 - 1; // Gives 2 KHz
   TIM_InitStruct.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_InitStruct.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_InitStruct.TIM_RepetitionCounter = 0;
@@ -252,7 +253,7 @@ static void handle_buffer_half_full()
     if (! dataReady) {
         memcpy((void*)workingBuffer
              , (void*)buffer
-             , ADC_BUFFERSIZE / 2);
+             , ADC_BUFFERSIZE); // Half ADC buffersize, 2 bytes per sample
 
         dataReady = true;
     }
@@ -263,10 +264,12 @@ static void handle_buffer_full()
    if (! dataReady) {
         memcpy((void*)workingBuffer
              , (void*)&buffer[ADC_BUFFERSIZE / 2]
-             , ADC_BUFFERSIZE / 2);
+             , ADC_BUFFERSIZE); // Half ADC buffersize, 2 bytes per sample
 
         dataReady = true;
     }
+
+   GPIO_ToggleBits(GPIOD, GPIO_Pin_13);
 }
 
 

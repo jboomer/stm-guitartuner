@@ -38,8 +38,8 @@ To do this the following circuit is used:
 
 # TODO
 
-[ ] Faster autocorrelation
-[ ] Try zero crossing counting
-[ ] Using microphone input
-[ ] Output on LCD screen
-[ ] Port to HAL/CMSIS/ChibiOSHAL (std. peripheral libs deprecated)
+- [ ] Faster autocorrelation
+- [ ] Try zero crossing counting
+- [ ] Using microphone input
+- [ ] Output on LCD screen
+- [ ] Port to HAL/CMSIS/ChibiOSHAL (std. peripheral libs deprecated)
