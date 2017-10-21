@@ -36,10 +36,22 @@ To do this the following circuit is used:
 
 # Results
 
+Below an example of the D string, sampled at 2 khz:
+
+![DString](images/d_2khz.svg "Sampled Signal"){ width=50% }
+
+And this is how the spectrum looks for this sample:
+
+![Spectrum](images/d_2hz.svg "Spectrum") { width=50% }
+
+The three peaks correspond to 50Hz (from the outlet), 146 Hz (the root frequency) and 292 Hz (the second harmonic).
+
+The root frequency that we're looking for is actually the lowest of these three peaks, so that makes it a little hard.
+
 # TODO
 
 - [ ] Faster autocorrelation
 - [ ] Try zero crossing counting
 - [ ] Using microphone input
-- [ ] Output on LCD screen
-- [ ] Port to HAL/CMSIS/ChibiOSHAL (std. peripheral libs deprecated)
+- [ ] Output on LCD screen / LEDs
+- [ ] Port to LL template
