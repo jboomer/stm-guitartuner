@@ -42,7 +42,7 @@ Below an example of the D string, sampled at 2 khz:
 
 And this is how the spectrum looks for this sample:
 
-![Spectrum](images/d_2hz.svg "Spectrum") { width=50% }
+![Spectrum](images/d_2khz_fft.svg "Spectrum") { width=50% }
 
 The three peaks correspond to 50Hz (from the outlet), 146 Hz (the root frequency) and 292 Hz (the second harmonic).
 
